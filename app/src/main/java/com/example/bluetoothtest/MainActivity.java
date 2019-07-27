@@ -1,6 +1,7 @@
 package com.example.bluetoothtest;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 import android.os.Bundle;
@@ -28,12 +29,23 @@ public class MainActivity extends AppCompatActivity {
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private ConnectedThread MyThred = null;
     public TextView mytext;
-    Button b1, b2;
+    Button b1, b2, b3, b4;
     private MyHandler h;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        for (BluetoothDevice bluetoothDevice :
+                pairedDevices) {
+            Log.d(LOG_TAG, bluetoothDevice.getAddress() + " : " + bluetoothDevice.getName());
+        }
+
+
         setContentView(R.layout.activity_main);
 
         mytext = findViewById(R.id.txtrobot);
@@ -54,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
         b1 = findViewById(R.id.b1);
         b2 = findViewById(R.id.b2);
+        b3 = findViewById(R.id.b3);
+        b4 = findViewById(R.id.b4);
 
         b1.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -66,6 +80,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MyThred.sendData("1");
                 mytext.setText("Отправлены данные: 1");
+            }
+        });
+
+        b3.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Main.class);
+                startActivity(intent);
+            }
+        });
+
+        b4.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+                startActivity(intent);
             }
         });
 

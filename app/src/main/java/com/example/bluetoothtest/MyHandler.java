@@ -14,6 +14,7 @@ public class MyHandler extends Handler {
 
     private final int ARDUINO_DATA = 1;
     private TextView mytext;
+    private StringBuilder sb = new StringBuilder();
 
     public MyHandler(TextView mytext) {
         this.mytext = mytext;
@@ -29,7 +30,13 @@ public class MyHandler extends Handler {
             case ARDUINO_DATA:
                 byte[] readBuf = (byte[]) msg.obj;
                 String strIncom = new String(readBuf, 0, msg.arg1);
-                mytext.setText("Данные от Arduino: " + strIncom);
+                sb.append(strIncom);                                            // формируем строку
+                int endOfLineIndex = sb.indexOf("\r\n");                        // определяем символы конца строки
+                if (endOfLineIndex > 0) {                                       // если встречаем конец строки,
+                    String sbprint = sb.substring(0, endOfLineIndex);           // то извлекаем строку
+                    sb.delete(0, sb.length());                                  // и очищаем sb
+                    mytext.setText("Ответ от Arduino: " + sbprint);             // обновляем TextView
+                }
                 break;
         }
     }
